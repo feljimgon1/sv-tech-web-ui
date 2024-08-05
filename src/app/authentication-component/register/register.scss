@@ -1,0 +1,14 @@
+.register-container {
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+
+    .input {
+      width: 100%;
+    }
+
+  }
+}
