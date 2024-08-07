@@ -34,6 +34,7 @@ const LoginForm = () => {
   // Alerts
   const [showErrorMessage, setShowErrorMessage] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
+  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false)
 
   const handleCloseSnackbar = () => {
     setShowErrorMessage(false);
@@ -55,6 +56,43 @@ const LoginForm = () => {
     }
     // Handle server response
     setLoadingSubmit(true)
+    fetch(`${import.meta.env.VITE_SV_TECH_API}/users/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: username,
+        password: password
+      }),
+      mode: 'cors',
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          setShowSuccessMessage(true)
+        }
+        return res.json()
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.error) {
+          setShowErrorMessage(true)
+          setErrorMessage(data.error)
+          setLoadingSubmit(false)
+          return
+        }
+        setLoadingSubmit(false)
+        setTimeout(() => {
+          setShowSuccessMessage(false)
+        }, 2500);
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('user', JSON.stringify(data.user))
+      }).catch((err) => {
+        console.log(err);
+        setErrorMessage('Unexpected error, please try again later')
+        setShowErrorMessage(true)
+        setLoadingSubmit(false)
+      })
   }
 
   return (
@@ -111,6 +149,21 @@ const LoginForm = () => {
           sx={{ width: '100%' }}
         >
           {errorMessage}
+        </Alert>
+      </Snackbar>}
+
+      {showSuccessMessage && <Snackbar
+        open={showSuccessMessage}
+        autoHideDuration={1000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Sesión iniciada satisfactoriamente
         </Alert>
       </Snackbar>}
     </div>

@@ -56,7 +56,7 @@ const RegisterForm = () => {
     setLoadingSubmit(true)
     // Handle server response
     fetch(
-      `${import.meta.env.VITE_SV_TECH_API}/users`,
+      `${import.meta.env.VITE_SV_TECH_API}/users/register`,
       {
         method: 'POST',
         headers: {
