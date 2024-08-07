@@ -56,7 +56,7 @@ const RegisterForm = () => {
     setLoadingSubmit(true)
     // Handle server response
     fetch(
-      `${import.meta.env.VITE_SV_TECH_API}/users/register`,
+      'http://localhost:5000/api/v1/users',
       {
         method: 'POST',
         headers: {
@@ -86,10 +86,6 @@ const RegisterForm = () => {
           setShowSuccessMessage(false)
         }, 2500);
       }
-    }).catch(() => {
-      setErrorMessage('Unexpected error, please try again later')
-      setShowErrorMessage(true)
-      setLoadingSubmit(false)
     })
   }
 
