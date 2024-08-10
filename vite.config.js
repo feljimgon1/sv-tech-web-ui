@@ -14,6 +14,14 @@ export default defineConfig({
         find: 'services',
         replacement: fileURLToPath(new URL('./src/services', import.meta.url)) 
       },
+      {
+        find: 'utils',
+        replacement: fileURLToPath(new URL('./src/services/utils', import.meta.url)) 
+      },
+      {
+        find: 'hooks',
+        replacement: fileURLToPath(new URL('./src/hooks', import.meta.url)) 
+      },
     ]
   }
 })

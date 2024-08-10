@@ -16,7 +16,7 @@ import RegisterForm from './register/RegisterForm';
 
 const AuthenticationComponent = () => {
 
-  const [value, setValue] = React.useState('login');
+  const [value, setValue] = React.useState('register');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

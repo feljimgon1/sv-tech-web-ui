@@ -1,29 +1,19 @@
-import React from 'react'
-import AuthenticationComponent from './authentication-component/AuthenticationComponent'
-import UserVerificationComponent from './user-verification-component/UserVerificationComponent'
+import React from 'react';
 
 const SVTech = () => {
 
-  const isLoggedIn = false
-  const isUserVerified = false
-
-  if (!isLoggedIn) {
-    return (
-      <AuthenticationComponent />
-    )
+  const handleLogout = () => {
+    fetch(`${import.meta.env.VITE_SV_TECH_API}/users/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    
   }
-
-  if (!isUserVerified) {
-    return (
-      <UserVerificationComponent />
-    )
-  }
-
   return (
-    <div>
-
+    <div className='sv-tech-container'>
+      <button onClick={handleLogout}>Cerrar sesión</button>
     </div>
-  )
-}
+  );
+};
 
-export default SVTech
+export default SVTech;

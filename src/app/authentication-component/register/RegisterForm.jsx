@@ -2,10 +2,14 @@ import React, { useEffect } from 'react'
 import './register.scss'
 import { Alert, IconButton, InputAdornment, Snackbar, TextField } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import { registerValidators } from '../authValidations.js'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { useDispatch } from 'react-redux';
+import { registerValidators } from 'services/utils/authValidations'
+import { setToken } from 'services/user/actions';
+import { setUser } from 'services/user/actions';
 
 const RegisterForm = () => {
+  const dispatch = useDispatch()
 
   // Form fields
   const [name, setName] = React.useState('')
@@ -75,21 +79,6 @@ const RegisterForm = () => {
         setShowSuccessMessage(true)
       }
       return res.json()
-    }).then((data) => {
-      if (data.error) {
-        setShowErrorMessage(true)
-        setErrorMessage(data.error)
-        setLoadingSubmit(false)
-      } else {
-        setLoadingSubmit(false)
-        setTimeout(() => {
-          setShowSuccessMessage(false)
-        }, 2500);
-      }
-    }).catch(() => {
-      setErrorMessage('Unexpected error, please try again later')
-      setShowErrorMessage(true)
-      setLoadingSubmit(false)
     })
   }
 

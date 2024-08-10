@@ -1,13 +1,18 @@
 import { assoc } from 'ramda'
-import { HASH_KEY_TOKEN } from './constants'
+import { DOMAIN, HASH_KEY_TOKEN } from './constants'
 import * as actionTypes from './action-types'
 
-const initialState = {}
+const initialState = {
+  [HASH_KEY_TOKEN]: localStorage.getItem('token'),
+  [DOMAIN]: JSON.parse(localStorage.getItem('user')),
+}
 
 export default (state = initialState, { type, payload } = {}) => {
   switch (type) {
-    case actionTypes.NEW_TOKEN:
-      return assoc(HASH_KEY_TOKEN, payload.access_token, state)
+    case actionTypes.SET_USER:
+      return assoc(DOMAIN, payload.user, state)
+    case actionTypes.SET_TOKEN:
+      return assoc(HASH_KEY_TOKEN, payload.token, state)
     default:
       return state
   }

@@ -11,7 +11,10 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { loginValidators } from '../authValidations'
+import { useDispatch } from 'react-redux';
+import { loginValidators } from 'services/utils/authValidations'
+import { setToken } from 'services/user/actions';
+import { setUser } from 'services/user/actions';
 
 /**
  * Renders a login form with username and password fields, a password visibility toggle,
@@ -20,6 +23,8 @@ import { loginValidators } from '../authValidations'
  * @return {JSX.Element} The login form component.
  */
 const LoginForm = () => {
+
+  const dispatch = useDispatch()
 
   // Form fields
   const [username, setUsername] = React.useState('')
@@ -61,6 +66,7 @@ const LoginForm = () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         email: username,
         password: password
@@ -74,7 +80,6 @@ const LoginForm = () => {
         return res.json()
       })
       .then((data) => {
-        console.log(data);
         if (data.error) {
           setShowErrorMessage(true)
           setErrorMessage(data.error)
@@ -85,10 +90,10 @@ const LoginForm = () => {
         setTimeout(() => {
           setShowSuccessMessage(false)
         }, 2500);
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('user', JSON.stringify(data.user))
+        dispatch(setToken(data.token))
+        dispatch(setUser(data.user))
       }).catch((err) => {
-        console.log(err);
+        (err);
         setErrorMessage('Unexpected error, please try again later')
         setShowErrorMessage(true)
         setLoadingSubmit(false)
