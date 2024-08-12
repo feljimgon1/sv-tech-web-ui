@@ -78,6 +78,7 @@ const RegisterForm = () => {
       if (res.status === 200) {
         setShowSuccessMessage(true)
       }
+      setLoadingSubmit(false)
       return res.json()
     })
   }
