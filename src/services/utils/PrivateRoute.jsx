@@ -11,9 +11,8 @@ const PrivateRoute = ({ children }) => {
   const auth = useAuth()
 
   useEffect(() => {
-    console.log(auth);
     if (!auth) {
-      navigate('/login')
+      navigate('/')
     }
   }, [auth, navigate])
 

@@ -11,6 +11,10 @@ export default defineConfig({
         replacement: fileURLToPath(new URL('./src/app', import.meta.url)) 
       },
       {
+        find: 'assets',
+        replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) 
+      },
+      {
         find: 'services',
         replacement: fileURLToPath(new URL('./src/services', import.meta.url)) 
       },

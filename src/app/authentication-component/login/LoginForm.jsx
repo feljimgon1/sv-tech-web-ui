@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { loginValidators } from 'services/utils/authValidations'
 import { setToken } from 'services/user/actions';
 import { setUser } from 'services/user/actions';
+import { useNavigate } from 'react-router';
 
 /**
  * Renders a login form with username and password fields, a password visibility toggle,
@@ -25,6 +26,7 @@ import { setUser } from 'services/user/actions';
 const LoginForm = () => {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   // Form fields
   const [username, setUsername] = React.useState('')
@@ -92,6 +94,8 @@ const LoginForm = () => {
         }, 2500);
         dispatch(setToken(data.token))
         dispatch(setUser(data.user))
+        localStorage.setItem('user', JSON.stringify(data.user))
+        navigate('/profile')
       }).catch((err) => {
         (err);
         setErrorMessage('Unexpected error, please try again later')

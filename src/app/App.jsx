@@ -17,10 +17,20 @@ import Dashboard from './pages/dashboard/Dashboard';
 */
 import Profile from 'app/profile/Profile';
 import PrivateRoute from 'utils/PrivateRoute';
+import SVTech from './SVTech';
 
 const router = createBrowserRouter([
-  { path: '/', element: <AuthenticationComponent /> },
+  { path: '/', element: (
+    <PrivateRoute>
+      <SVTech />
+    </PrivateRoute>
+  ) },
   { path: '/verify', element: <UserVerificationComponent /> },
+  { path: '/profile', element: (
+    <PrivateRoute>
+      <Profile />
+    </PrivateRoute>
+  ) },
   // {
   //   path: '/dashboard', element: (
   //     <PrivateRoute>
