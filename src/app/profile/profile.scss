@@ -57,4 +57,13 @@ li {
   img {
     height: 100px;
   }
+
+  .company {
+    transition: 300ms all;
+
+    &:hover {
+      transform: scale(1.02);
+      cursor: pointer;
+    }
+  }
 }
