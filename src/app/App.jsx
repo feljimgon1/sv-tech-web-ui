@@ -7,11 +7,22 @@ import {
   getIsTokenExpired
 } from 'services/utils/authValidations';
 import SVTech from './SVTech';
+import { setNotification } from 'services/notification/actions';
+import { useDispatch } from 'react-redux';
 
 function App() {
 
+  const dispatch = useDispatch();
+
+  if (getIsTokenExpired()) {
+    dispatch(setNotification({
+      success: 'info',
+      message: 'Su sesión ha expirado, por favor inicie sesión de nuevo',
+    }))
+  }
+
   const renderUserAuthentication = () => {
-    if (!getIsThereToken()) {
+    if (!getIsThereToken() || getIsTokenExpired()) {
       return <AuthenticationComponent />
     }
   }
@@ -23,8 +34,9 @@ function App() {
   }
 
   const renderSvTech = () => {
-    console.log(getIsUserActive(), !getIsTokenExpired());
-    return <SVTech />
+    if (getIsUserActive(), !getIsTokenExpired()) {
+      return <SVTech />
+    }
   }
 
   return (

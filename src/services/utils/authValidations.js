@@ -63,22 +63,15 @@ export function getIsThereToken() {
 }
 
 export function getIsTokenExpired() {
-  const dispatch = useDispatch();
   const token = localStorage.getItem('access_token');
   if (token) {
     try {
       const decoded = jwtDecode(token);
       const currentTime = Date.now() / 1000;
       const tokenExpired = decoded.exp < currentTime;
-      if (tokenExpired) {
-        dispatch(setNotification({
-          success: 'info',
-          message: 'Su sesión ha expirado, por favor inicie sesión de nuevo',
-        }))
-      }
-      return true
+      return tokenExpired
     } catch (error) {
-      return
+      return false
     }
   } else {
     return false
