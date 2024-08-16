@@ -1,34 +1,41 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Home from '../pages/unauthorized/Home';
 import AuthenticationComponent from '../pages/unauthorized/authentication/AuthenticationComponent';
+import Notification from './components/notification/Notification';
+import { UserDashboard } from '../pages/user/UserDashboard';
 
 const App = () => {
-  const { currentRole } = useSelector(state => state.user);
+  const { rol } = useSelector(state => state.user);
+
+  console.log(rol);
 
   return (
-    <Router>
-      {currentRole === null &&
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<AuthenticationComponent />} />
-          <Route path='*' element={<Navigate to="/" />} />
-        </Routes>}
+    <>
+      <Notification />
+      <Router>
+        {((rol === null) || (rol === undefined)) &&
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<AuthenticationComponent />} />
+            <Route path='*' element={<Navigate to="/" />} />
+          </Routes>}
 
-      {/* {currentRole === "ADMIN" &&
+        {/* {currentRole === "ADMIN" &&
         <>
           <AdminDashboard />
         </>
       }
+      */}
 
-      {currentRole === "USER" &&
-        <>
-          <UserDashboard />
-        </>
-      } */}
+        {rol === "USER" &&
+          <>
+            <UserDashboard />
+          </>
+        }
 
-    </Router>
+      </Router>
+    </>
   )
 }
 

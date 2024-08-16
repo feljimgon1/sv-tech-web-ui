@@ -11,7 +11,7 @@ import useGoogleAuth from '../login/GoogleAuth';
 
 const RegisterForm = () => {
   const dispatch = useDispatch()
-  const { login, user, profile } = useGoogleAuth(); // Use the custom hook
+  const { login } = useGoogleAuth(); // Use the custom hook
 
   // Form fields
   const [name, setName] = React.useState('')

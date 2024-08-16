@@ -26,5 +26,6 @@ export const apiCall = (method, urlSuffix, auth, body) => {
       }
       return data
     }).catch((err) => {
+      throw new Error(err)
     })
 }

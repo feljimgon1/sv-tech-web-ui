@@ -1,6 +1,4 @@
 import { jwtDecode } from "jwt-decode";
-import { setNotification } from "../notification/actions";
-import { useDispatch } from "react-redux";
 
 function validatePassword(password) {
   const hasCapitalLetter = /[A-Z]/.test(password);

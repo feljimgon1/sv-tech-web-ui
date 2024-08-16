@@ -8,16 +8,18 @@ const parseJSON = (item) => {
   }
 };
 
+const initialUser = parseJSON(localStorage.getItem('user'));
+
 const initialState = {
-  status: 'idle',
-  userDetails: [],
-  tempDetails: [],
-  loading: false,
-  currentUser: parseJSON(localStorage.getItem('user')) || null,
-  currentRole: (parseJSON(localStorage.getItem('user')) || {}).role || null,
-  error: null,
-  response: null,
-  darkMode: true
+  status: initialUser.status || 'idle',
+  _id:  initialUser._id || '',
+  name: initialUser.name || '',
+  surname: initialUser.surname || '',
+  email: initialUser.email || '',
+  active: initialUser.active || '',
+  rol: initialUser.rol || '',
+  username: initialUser.username|| '',
+  companies: initialUser.companies || []
 };
 
 const userSlice = createSlice({
@@ -27,23 +29,17 @@ const userSlice = createSlice({
     authRequest: (state) => {
       state.status = 'loading';
     },
-    underControl: (state) => {
-      state.status = 'idle';
-      state.response = null;
-    },
-    stuffAdded: (state, action) => {
-      state.status = 'added';
-      state.response = null;
-      state.error = null;
-      state.tempDetails = action.payload;
-    },
     authSuccess: (state, action) => {
       state.status = 'success';
-      state.currentUser = action.payload;
-      state.currentRole = action.payload.role;
+      state._id = action.payload._id
+      state.name = action.payload.name
+      state.surname = action.payload.surname
+      state.email = action.payload.email
+      state.active = action.payload.active
+      state.rol = action.payload.rol
+      state.username = action.payload.username
+      state.companies = action.payload.companies
       localStorage.setItem('user', JSON.stringify(action.payload));
-      state.response = null;
-      state.error = null;
     },
     authFailed: (state, action) => {
       state.status = 'failed';
@@ -58,7 +54,7 @@ const userSlice = createSlice({
       state.currentUser = null;
       state.status = 'idle';
       state.error = null;
-      state.currentRole = null
+      state.currentRol = null
     },
 
     doneSuccess: (state, action) => {

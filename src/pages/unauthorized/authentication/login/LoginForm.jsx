@@ -9,66 +9,87 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useDispatch } from 'react-redux';
-import { loginValidators } from 'services/utils/authValidations';
+import { useDispatch, useSelector } from 'react-redux';
+import { authRequest, authSuccess, authFailed, authError } from '../../../../redux/userRelated/userSlice';
+import { setNotification, clearNotification } from '../../../../redux/notificationRelated/notificationSlice';
 import { apiCall } from 'services/api/common.api';
-import { setNotification } from 'services/notification/actions';
 import useGoogleAuth from './GoogleAuth'; // Import the custom hook
 import { FcGoogle } from "react-icons/fc";
+import { loginValidators } from '../authValidations';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const { login, user, profile } = useGoogleAuth(); // Use the custom hook
+  const navigate = useNavigate();
+
+  const notification = useSelector(state => state.notification);
+
+  const { login } = useGoogleAuth();
 
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loadingSubmit, setLoadingSubmit] = React.useState(false);
-
   const [showPassword, setShowPassword] = React.useState(false);
+
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState('');
-
   const handleCloseSnackbar = () => {
-    setShowErrorMessage(false);
+    dispatch(clearNotification());
   };
 
   const handleChange = (e) => {
-    setShowErrorMessage(false);
     if (e.target.name === 'username') setUsername(e.target.value);
     if (e.target.name === 'password') setPassword(e.target.value);
   };
 
   const submit = async (e) => {
     e.preventDefault();
+
+    // Validation
     let validators = loginValidators(password, username);
     if (validators[0]) {
-      setShowErrorMessage(true);
-      setErrorMessage(validators[1]);
+      dispatch(setNotification({
+        message: validators[1],
+        success: false
+      }));
       return;
     }
 
     setLoadingSubmit(true);
+    dispatch(authRequest());
 
-    const userLogin = await apiCall('POST', '/users/login', undefined, JSON.stringify({
-      email: username,
-      password: password,
-    }));
+    try {
+      const userLogin = await apiCall('POST', '/users/login', undefined, JSON.stringify({
+        email: username,
+        password: password,
+      }));
 
-    userLogin
-      ? dispatch(setNotification({
-        message: userLogin.message,
-        success: userLogin.success,
-      }))
-      : dispatch(setNotification({
+      console.log(userLogin);
+
+      if (userLogin.success) {
+        dispatch(authSuccess(userLogin.data));
+        dispatch(setNotification({
+          message: userLogin.message,
+          success: true,
+        }));
+        navigate('/')
+      } else {
+        dispatch(authFailed(userLogin.message));
+        dispatch(setNotification({
+          message: userLogin.message,
+          success: false,
+        }));
+      }
+    } catch (error) {
+      dispatch(authError('Login failed, please try again.'));
+      dispatch(setNotification({
         message: 'Se ha producido un error, inténtelo de nuevo más tarde',
         success: false,
       }));
-
-    localStorage.setItem('access_token', userLogin.token);
-    setLoadingSubmit(false);
+    } finally {
+      setLoadingSubmit(false);
+    }
   };
 
   return (
@@ -116,19 +137,19 @@ const LoginForm = () => {
           <FcGoogle onClick={login} />
         </div>
       </form>
-      {showErrorMessage && (
+      {notification?.message && (
         <Snackbar
-          open={showErrorMessage}
+          open={!!notification.message}
           autoHideDuration={2500}
           onClose={handleCloseSnackbar}
         >
           <Alert
             onClose={handleCloseSnackbar}
-            severity="error"
+            severity={notification.success ? "success" : "error"}
             variant="filled"
             sx={{ width: '100%' }}
           >
-            {errorMessage}
+            {notification.message}
           </Alert>
         </Snackbar>
       )}
