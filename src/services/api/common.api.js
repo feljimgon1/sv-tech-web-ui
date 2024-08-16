@@ -16,14 +16,9 @@ export const apiCall = (method, urlSuffix, auth, body) => {
     mode: 'cors',
   })
     .then((res) => {
-      if (res.status === 200) {
-      }
       return res.json()
     })
     .then((data) => {
-      if (data.error) {
-        return
-      }
       return data
     }).catch((err) => {
       throw new Error(err)

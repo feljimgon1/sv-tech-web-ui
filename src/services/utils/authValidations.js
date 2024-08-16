@@ -97,7 +97,7 @@ export function getIsUserActive() {
       const decoded = jwtDecode(token);
       return decoded.data.active
     } catch (error) {
-      return
+      return error
     }
   } else {
     return false

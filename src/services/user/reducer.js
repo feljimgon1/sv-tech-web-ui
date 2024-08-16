@@ -1,5 +1,8 @@
 import { assoc } from 'ramda'
-import { DOMAIN, HASH_KEY_TOKEN } from './constants'
+import {
+  DOMAIN,
+  HASH_KEY_TOKEN
+} from './constants'
 import * as actionTypes from './action-types'
 
 const initialState = {
