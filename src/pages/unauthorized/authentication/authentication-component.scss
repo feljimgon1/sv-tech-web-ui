@@ -1,0 +1,47 @@
+.authentication-container {
+  min-height: 9vh;
+  min-height: 90dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .card {
+    padding: 3em;
+    max-width: 90%;
+  }
+
+  .register-container,
+  .login-container {
+    form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1em;
+
+      .input {
+        width: 100%;
+      }
+
+      .submit-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2em;
+        
+        svg {
+          font-size: 3rem;
+          transition: 300ms all;
+          padding: .2em;
+          border-radius: 50%;
+
+          &:hover {
+            cursor: pointer;
+            background-color: #f0f0f0;
+          }
+        }
+      }
+
+    }
+  }
+}
