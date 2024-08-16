@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux';
 import { registerValidators } from 'services/utils/authValidations'
 import { setToken } from 'services/user/actions';
 import { setUser } from 'services/user/actions';
+import { apiCall } from '../../../services/api/common.api'
+import { setNotification } from '../../../services/notification/actions'
 
 const RegisterForm = () => {
   const dispatch = useDispatch()
@@ -43,9 +45,9 @@ const RegisterForm = () => {
     setShowErrorMessage(false);
   };
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    let validators = registerValidators(password, email)
+    let validators = registerValidators(name, surname, password, email)
     if (password !== repeatPassword) {
       setShowErrorMessage(true)
       setErrorMessage('Las contraseñas no coinciden')
@@ -59,28 +61,24 @@ const RegisterForm = () => {
     }
     setLoadingSubmit(true)
     // Handle server response
-    fetch(
-      `${import.meta.env.VITE_SV_TECH_API}/users/register`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: name,
-          surname: surname,
-          email: email,
-          password: password
-        }),
-        mode: 'cors',
-      },
-    ).then((res) => {
-      if (res.status === 200) {
-        setShowSuccessMessage(true)
-      }
-      setLoadingSubmit(false)
-      return res.json()
-    })
+    const userRegister = await apiCall('POST', '/users/register', undefined, JSON.stringify({
+      name: name,
+      surname: surname,
+      email: email,
+      password: password
+    }))
+
+    userRegister ?
+      dispatch(setNotification({
+        message: userRegister.message,
+        success: userRegister.success,
+      })) :
+      dispatch(setNotification({
+        message: 'Se ha producido un error, inténtelo de nuevo más tarde',
+        success: false,
+      }))
+
+    setLoadingSubmit(false)
   }
 
   return (

@@ -1,3 +1,7 @@
+import { jwtDecode } from "jwt-decode";
+import { setNotification } from "../notification/actions";
+import { useDispatch } from "react-redux";
+
 function validatePassword(password) {
   const hasCapitalLetter = /[A-Z]/.test(password);
   const hasTwoNumbers = /\d.*\d/.test(password);
@@ -29,7 +33,13 @@ export function loginValidators(password, username) {
   return [false, ''];
 }
 
-export function registerValidators(password, email) {
+export function registerValidators(name, surname, password, email) {
+  if (name === '' || name === undefined) {
+    return [true, 'Debe proporcionar un nombre'];
+  }
+  if (surname === '' || surname === undefined) {
+    return [true, 'Debe proporcionar un apellido'];
+  }
   if (email === '' || email === undefined) {
     return [true, 'Debe proporcionar un correo'];
   }
@@ -41,4 +51,64 @@ export function registerValidators(password, email) {
     return passwordValidationResult;
   }
   return [false, ''];
+}
+
+export function getIsThereToken() {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export function getIsTokenExpired() {
+  const dispatch = useDispatch();
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      const tokenExpired = decoded.exp < currentTime;
+      if (tokenExpired) {
+        dispatch(setNotification({
+          success: 'info',
+          message: 'Su sesión ha expirado, por favor inicie sesión de nuevo',
+        }))
+      }
+      return true
+    } catch (error) {
+      return
+    }
+  } else {
+    return false
+  }
+}
+
+export function getUserRole() {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.data.rol
+    } catch (error) {
+      return
+    }
+  } else {
+    return false
+  }
+}
+
+export function getIsUserActive() {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.data.active
+    } catch (error) {
+      return
+    }
+  } else {
+    return false
+  }
 }

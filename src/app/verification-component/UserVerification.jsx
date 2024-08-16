@@ -4,7 +4,7 @@ import { setUser } from 'services/user/actions'
 import { handleGetUser, handleActivateUser } from 'services/api/user.api'
 import { Alert, CircularProgress } from '@mui/material'
 import './user-verification.scss'
-import { useNavigate } from 'react-router'
+// import { useNavigate } from 'react-router'
 
 const UserVerificationComponent = () => {
 
@@ -12,7 +12,7 @@ const UserVerificationComponent = () => {
   const [userData, setUserData] = useState({})
   const [isPendingRequest, setIsPendingRequest] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   useEffect(() => {
     setIsPendingRequest(true)
@@ -43,7 +43,7 @@ const UserVerificationComponent = () => {
     setIsPendingRequest(false)
 
     setTimeout(() => {
-      navigate('/profile')
+      // navigate('/profile')
     }, 3500);
   }, []);
 

@@ -3,6 +3,11 @@ import {
   reducer as userReducer
 } from 'services/user'
 
+import {
+  DOMAIN as NOTIFICATION_DOMAIN,
+  reducer as notificationReducer
+} from 'services/notification'
+
 // TODO: Add CONFIG_DOMAIN and COMMUNICATION_DOMAIN
 
 // import {
@@ -16,4 +21,5 @@ import {
 
 export default () => ({
   [USER_DOMAIN]: userReducer,
+  [NOTIFICATION_DOMAIN]: notificationReducer,
 })

@@ -15,7 +15,8 @@ import { useDispatch } from 'react-redux';
 import { loginValidators } from 'services/utils/authValidations'
 import { setToken } from 'services/user/actions';
 import { setUser } from 'services/user/actions';
-import { useNavigate } from 'react-router';
+import { apiCall } from '../../../services/api/common.api';
+import { setNotification } from '../../../services/notification/actions';
 
 /**
  * Renders a login form with username and password fields, a password visibility toggle,
@@ -26,7 +27,6 @@ import { useNavigate } from 'react-router';
 const LoginForm = () => {
 
   const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   // Form fields
   const [username, setUsername] = React.useState('')
@@ -41,7 +41,6 @@ const LoginForm = () => {
   // Alerts
   const [showErrorMessage, setShowErrorMessage] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
-  const [showSuccessMessage, setShowSuccessMessage] = React.useState(false)
 
   const handleCloseSnackbar = () => {
     setShowErrorMessage(false);
@@ -53,7 +52,7 @@ const LoginForm = () => {
     if (e.target.name === 'password') setPassword(e.target.value)
   }
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     let validators = loginValidators(password, username)
     if (validators[0]) {
@@ -63,45 +62,24 @@ const LoginForm = () => {
     }
     // Handle server response
     setLoadingSubmit(true)
-    fetch(`${import.meta.env.VITE_SV_TECH_API}/users/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        email: username,
-        password: password
-      }),
-      mode: 'cors',
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          setShowSuccessMessage(true)
-        }
-        return res.json()
-      })
-      .then((data) => {
-        if (data.error) {
-          setShowErrorMessage(true)
-          setErrorMessage(data.error)
-          setLoadingSubmit(false)
-          return
-        }
-        setLoadingSubmit(false)
-        setTimeout(() => {
-          setShowSuccessMessage(false)
-        }, 2500);
-        dispatch(setToken(data.token))
-        dispatch(setUser(data.user))
-        localStorage.setItem('user', JSON.stringify(data.user))
-        navigate('/profile')
-      }).catch((err) => {
-        (err);
-        setErrorMessage('Unexpected error, please try again later')
-        setShowErrorMessage(true)
-        setLoadingSubmit(false)
-      })
+
+    const userLogin = await apiCall('POST', '/users/login', undefined, JSON.stringify({
+      email: username,
+      password: password
+    }))
+
+    userLogin ?
+      dispatch(setNotification({
+        message: userLogin.message,
+        success: userLogin.success,
+      })) :
+      dispatch(setNotification({
+        message: 'Se ha producido un error, inténtelo de nuevo más tarde',
+        success: false,
+      }))
+
+    localStorage.setItem('access_token', userLogin.token)
+    setLoadingSubmit(false)
   }
 
   return (
@@ -158,21 +136,6 @@ const LoginForm = () => {
           sx={{ width: '100%' }}
         >
           {errorMessage}
-        </Alert>
-      </Snackbar>}
-
-      {showSuccessMessage && <Snackbar
-        open={showSuccessMessage}
-        autoHideDuration={1000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Sesión iniciada satisfactoriamente
         </Alert>
       </Snackbar>}
     </div>

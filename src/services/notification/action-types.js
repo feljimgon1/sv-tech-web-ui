@@ -1,0 +1,4 @@
+import { SERVICE } from './constants'
+
+export const SET_NOTIFICATION = `${SERVICE}/SET_NOTIFICATION`
+export const REMOVE_NOTIFICATION = `${SERVICE}/REMOVE_NOTIFICATION`;

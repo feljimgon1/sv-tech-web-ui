@@ -3,8 +3,6 @@ import { DOMAIN, HASH_KEY_TOKEN } from './constants'
 import * as actionTypes from './action-types'
 
 const initialState = {
-  [HASH_KEY_TOKEN]: localStorage.getItem('token'),
-  [DOMAIN]: JSON.parse(localStorage.getItem('user')),
 }
 
 export default (state = initialState, { type, payload } = {}) => {
