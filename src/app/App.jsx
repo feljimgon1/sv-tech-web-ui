@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Home from '../pages/unauthorized/Home';
 import AuthenticationComponent from '../pages/unauthorized/authentication/AuthenticationComponent';
 import Notification from './components/notification/Notification';
-import { UserDashboard } from '../pages/user/UserDashboard';
+import UserDashboard from '../pages/user/UserDashboard';
 
 const App = () => {
   const { rol } = useSelector(state => state.user);
